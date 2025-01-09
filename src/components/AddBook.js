@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { addBookToDB } from '../api';
 import styled from 'styled-components';
 
@@ -40,6 +41,7 @@ const SubmitButton = styled.button`
 `;
 
 function AddBook() {
+    const navigate = useNavigate();
     const [bookData, setBookData] = useState({
         title: '',
         author: '',
@@ -50,6 +52,14 @@ function AddBook() {
         description: ''
     });
     const [message, setMessage] = useState('');
+
+    // 관리자 체크
+    useEffect(() => {
+        const isAdmin = sessionStorage.getItem('isAdmin');
+        if (!isAdmin) {
+            navigate('/admin-login');
+        }
+    }, [navigate]);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
