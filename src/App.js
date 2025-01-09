@@ -6,6 +6,8 @@ import BookList from './components/BookList';
 import BookDetail from './components/BookDetail';
 import Favorites from './components/Favorites'; // 즐겨찾기 페이지 추가
 import styled from "styled-components";
+import DBBookSearch from './components/DBBookSearch';
+import AddBook from './components/AddBook';
 
 const AppContainer = styled.div`
     max-width: 800px;
@@ -38,11 +40,15 @@ function App() {
                 <NavBar>
                     <Link to="/">Home</Link>
                     <Link to="/favorites">Favorites</Link> {/* 즐겨찾기 링크 추가 */}
+                    <Link to="/db-search">DB 도서 검색</Link> {/* 새로운 링크 추가 */}
+                    <Link to="/add-book">도서 추가</Link> {/* 새로운 링크 */}
                 </NavBar>
                 <Routes>
                     <Route path="/" element={<BookList />} />
                     <Route path="/book/:isbn" element={<BookDetail />} />
                     <Route path="/favorites" element={<Favorites />} /> {/* 즐겨찾기 라우트 추가 */}
+                    <Route path="/db-search" element={<DBBookSearch />} /> {/* 새로운 라우트 추가 */}
+                    <Route path="/add-book" element={<AddBook />} /> {/* 새로운 라우트 */}
                 </Routes>
             </Router>
         </AppContainer>

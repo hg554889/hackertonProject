@@ -5,6 +5,7 @@ const app = express();
 const PORT = 5000;
 const mongoose = require('mongoose');
 const Favorite = require('./models/Favorite');
+const Book = require('./models/Book');
 
 // 미들웨어 설정
 app.use(cors()); // CORS 문제 방지
@@ -57,6 +58,34 @@ app.delete('/api/favorites/:id', async (req, res) => {
         res.json({ message: 'Favorite deleted successfully!' });
     } catch (error) {
         res.status(500).json({ error: 'Failed to delete favorite' });
+    }
+});
+
+// DB 도서 검색 API
+app.get('/api/db/books/search', async (req, res) => {
+    const { query } = req.query;
+    try {
+        const books = await Book.find({
+            $or: [
+                { title: { $regex: query, $options: 'i' } },
+                { author: { $regex: query, $options: 'i' } }
+            ]
+        }).limit(10);
+        
+        res.json(books);
+    } catch (error) {
+        res.status(500).json({ error: '도서 검색 중 오류가 발생했습니다.' });
+    }
+});
+
+// DB에 도서 추가 API
+app.post('/api/db/books', async (req, res) => {
+    try {
+        const newBook = new Book(req.body);
+        await newBook.save();
+        res.status(201).json(newBook);
+    } catch (error) {
+        res.status(500).json({ error: '도서 추가 중 오류가 발생했습니다.' });
     }
 });
 

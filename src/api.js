@@ -22,3 +22,26 @@ export const searchBooks = async (query, page = 1, size = 10) => {
         throw error;
     }
 };
+
+// 기존 카카오 API 함수는 유지하고 새로운 함수 추가
+export const searchDBBooks = async (query) => {
+    try {
+        const response = await axios.get(`/api/db/books/search`, {
+            params: { query }
+        });
+        return response.data;
+    } catch (error) {
+        console.error('DB 도서 검색 중 오류:', error);
+        throw error;
+    }
+};
+
+export const addBookToDB = async (bookData) => {
+    try {
+        const response = await axios.post('/api/db/books', bookData);
+        return response.data;
+    } catch (error) {
+        console.error('도서 추가 중 오류:', error);
+        throw error;
+    }
+};
