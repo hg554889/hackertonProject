@@ -28,6 +28,10 @@ const SearchButton = styled.button`
     border: none;
     border-radius: 4px;
     cursor: pointer;
+
+    &:hover {
+        background-color: #0056b3;
+    }
 `;
 
 const BookList = styled.div`
@@ -40,6 +44,31 @@ const BookCard = styled.div`
     padding: 15px;
     border-radius: 4px;
     background: white;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+`;
+
+const BookTitle = styled.h3`
+    margin: 0 0 10px 0;
+    color: #333;
+`;
+
+const BookInfo = styled.p`
+    margin: 5px 0;
+    color: #666;
+`;
+
+const LoadingMessage = styled.div`
+    text-align: center;
+    padding: 20px;
+    color: #666;
+`;
+
+const ErrorMessage = styled.div`
+    color: #dc3545;
+    padding: 10px;
+    border-radius: 4px;
+    background-color: #f8d7da;
+    margin-bottom: 20px;
 `;
 
 function DBBookSearch() {
@@ -77,21 +106,18 @@ function DBBookSearch() {
                 <SearchButton type="submit">검색</SearchButton>
             </SearchForm>
 
-            {loading && <div>검색 중...</div>}
-            {error && <div style={{color: 'red'}}>{error}</div>}
+            {loading && <LoadingMessage>검색 중...</LoadingMessage>}
+            {error && <ErrorMessage>{error}</ErrorMessage>}
 
             <BookList>
                 {books.map((book) => (
                     <BookCard key={book._id}>
-                        <h3>{book.title}</h3>
-                        <p>저자: {book.author}</p>
-                        <p>출판사: {book.publisher}</p>
-                        {book.thumbnail && (
-                            <img 
-                                src={book.thumbnail} 
-                                alt={book.title} 
-                                style={{maxWidth: '100px'}}
-                            />
+                        <BookTitle>{book.title}</BookTitle>
+                        <BookInfo>저자: {book.author}</BookInfo>
+                        <BookInfo>출판사: {book.publisher}</BookInfo>
+                        <BookInfo>가격: {book.price}원</BookInfo>
+                        {book.description && (
+                            <BookInfo>설명: {book.description}</BookInfo>
                         )}
                     </BookCard>
                 ))}

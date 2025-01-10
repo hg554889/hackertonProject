@@ -1,7 +1,5 @@
-// src/App.js
-// main logic
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Link, useNavigate } from 'react-router-dom';
 import BookList from './components/BookList';
 import BookDetail from './components/BookDetail';
 import Favorites from './components/Favorites';
@@ -35,13 +33,28 @@ const NavBar = styled.nav`
     }
 `;
 
+// Home 링크를 위한 별도의 컴포넌트
+const HomeLink = () => {
+    const navigate = useNavigate();
+    
+    const handleHomeClick = (e) => {
+        e.preventDefault();
+        navigate('/');
+        window.location.reload(); // 페이지 새로고침
+    };
+
+    return (
+        <Link to="/" onClick={handleHomeClick}>Home</Link>
+    );
+};
+
 function App() {
     return (
         <AppContainer>
             <Router>
                 <NavBar>
                     <div>
-                        <Link to="/">Home</Link>
+                        <HomeLink />
                         <Link to="/favorites">Favorites</Link>
                         <Link to="/db-search">DB 도서 검색</Link>
                         {sessionStorage.getItem('isAdmin') && (

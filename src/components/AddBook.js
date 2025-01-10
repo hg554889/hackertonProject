@@ -45,10 +45,8 @@ function AddBook() {
     const [bookData, setBookData] = useState({
         title: '',
         author: '',
-        isbn: '',
         publisher: '',
         price: '',
-        thumbnail: '',
         description: ''
     });
     const [message, setMessage] = useState('');
@@ -72,25 +70,29 @@ function AddBook() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            // price를 숫자로 변환
             const formattedData = {
                 ...bookData,
                 price: Number(bookData.price)
             };
             
-            await addBookToDB(formattedData);
-            setMessage('도서가 성공적으로 추가되었습니다!');
-            // 폼 초기화
-            setBookData({
-                title: '',
-                author: '',
-                isbn: '',
-                publisher: '',
-                price: '',
-                thumbnail: '',
-                description: ''
-            });
+            const response = await addBookToDB(formattedData);
+            console.log('도서 추가 결과:', response); // 로깅 추가
+            
+            if (response.success) {
+                setMessage('도서가 성공적으로 추가되었습니다!');
+                // 폼 초기화
+                setBookData({
+                    title: '',
+                    author: '',
+                    publisher: '',
+                    price: '',
+                    description: ''
+                });
+            } else {
+                setMessage('도서 추가 중 오류가 발생했습니다.');
+            }
         } catch (error) {
+            console.error('도서 추가 중 상세 오류:', error);
             setMessage('도서 추가 중 오류가 발생했습니다.');
         }
     };
@@ -120,22 +122,13 @@ function AddBook() {
                     />
                 </FormGroup>
                 <FormGroup>
-                    <label>ISBN</label>
-                    <Input
-                        type="text"
-                        name="isbn"
-                        value={bookData.isbn}
-                        onChange={handleChange}
-                        required
-                    />
-                </FormGroup>
-                <FormGroup>
                     <label>출판사</label>
                     <Input
                         type="text"
                         name="publisher"
                         value={bookData.publisher}
                         onChange={handleChange}
+                        required
                     />
                 </FormGroup>
                 <FormGroup>
@@ -145,15 +138,7 @@ function AddBook() {
                         name="price"
                         value={bookData.price}
                         onChange={handleChange}
-                    />
-                </FormGroup>
-                <FormGroup>
-                    <label>썸네일 URL</label>
-                    <Input
-                        type="url"
-                        name="thumbnail"
-                        value={bookData.thumbnail}
-                        onChange={handleChange}
+                        required
                     />
                 </FormGroup>
                 <FormGroup>

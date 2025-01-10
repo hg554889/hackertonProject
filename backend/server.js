@@ -61,6 +61,38 @@ app.delete('/api/favorites/:id', async (req, res) => {
     }
 });
 
+// DB에 도서 추가 API
+app.post('/api/db/books', async (req, res) => {
+    try {
+        // 새 도서 생성
+        const newBook = new Book({
+            title: req.body.title,
+            author: req.body.author,
+            publisher: req.body.publisher,
+            price: Number(req.body.price),
+            description: req.body.description
+        });
+
+        // DB에 저장
+        const savedBook = await newBook.save();
+        
+        console.log('도서 추가 성공:', savedBook); // 로깅 추가
+
+        res.status(201).json({
+            success: true,
+            data: savedBook,
+            message: '도서가 성공적으로 추가되었습니다.'
+        });
+    } catch (error) {
+        console.error('도서 추가 중 오류:', error); // 자세한 에러 로깅
+        res.status(500).json({ 
+            success: false,
+            error: '도서 추가 중 오류가 발생했습니다.',
+            details: error.message 
+        });
+    }
+});
+
 // DB 도서 검색 API
 app.get('/api/db/books/search', async (req, res) => {
     const { query } = req.query;
@@ -70,22 +102,24 @@ app.get('/api/db/books/search', async (req, res) => {
                 { title: { $regex: query, $options: 'i' } },
                 { author: { $regex: query, $options: 'i' } }
             ]
-        }).limit(10);
+        }).sort({ createdAt: -1 });
         
+        console.log('검색된 도서 수:', books.length); // 로깅 추가
         res.json(books);
     } catch (error) {
+        console.error('도서 검색 중 오류:', error);
         res.status(500).json({ error: '도서 검색 중 오류가 발생했습니다.' });
     }
 });
 
-// DB에 도서 추가 API
-app.post('/api/db/books', async (req, res) => {
+// 전체 도서 목록 조회 API 추가
+app.get('/api/db/books', async (req, res) => {
     try {
-        const newBook = new Book(req.body);
-        await newBook.save();
-        res.status(201).json(newBook);
+        const books = await Book.find().sort({ createdAt: -1 });
+        res.json(books);
     } catch (error) {
-        res.status(500).json({ error: '도서 추가 중 오류가 발생했습니다.' });
+        console.error('도서 목록 조회 중 오류:', error);
+        res.status(500).json({ error: '도서 목록 조회 중 오류가 발생했습니다.' });
     }
 });
 

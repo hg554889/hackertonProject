@@ -23,7 +23,19 @@ export const searchBooks = async (query, page = 1, size = 10) => {
     }
 };
 
-// 기존 카카오 API 함수는 유지하고 새로운 함수 추가
+// DB에 도서 추가
+export const addBookToDB = async (bookData) => {
+    try {
+        const response = await axios.post('/api/db/books', bookData);
+        console.log('도서 추가 응답:', response.data); // 로깅 추가
+        return response.data;
+    } catch (error) {
+        console.error('도서 추가 중 오류:', error);
+        throw error;
+    }
+};
+
+// DB 도서 검색 (카카오 API와 별도)
 export const searchDBBooks = async (query) => {
     try {
         const response = await axios.get(`/api/db/books/search`, {
@@ -36,12 +48,13 @@ export const searchDBBooks = async (query) => {
     }
 };
 
-export const addBookToDB = async (bookData) => {
+// 전체 도서 목록 조회
+export const getAllBooks = async () => {
     try {
-        const response = await axios.post('/api/db/books', bookData);
+        const response = await axios.get('/api/db/books');
         return response.data;
     } catch (error) {
-        console.error('도서 추가 중 오류:', error);
+        console.error('도서 목록 조회 중 오류:', error);
         throw error;
     }
 };
